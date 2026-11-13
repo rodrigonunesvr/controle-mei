@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sistema MEI — Controle financeiro para MEI prestador de serviços</title>
+<meta name="description" content="Aplicativo para MEI prestador de serviços: veja quanto lucrou, quanto pode retirar e quem está devendo. Orçamentos, recibos, DAS e limite do MEI. Sem mensalidade.">
+<meta name="theme-color" content="#1F3A5F">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Sistema MEI — seu MEI organizado no celular">
+<meta property="og:description" content="Veja quanto lucrou, quanto pode retirar e quem está devendo. Sem planilha e sem mensalidade.">
+<meta property="og:image" content="https://rodrigonunesvr.github.io/controle-mei/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/icon-192.png">
+<style>
+:root{--navy:#1F3A5F;--navy2:#16294A;--teal:#0B6E63;--mint:#5CD1C1;--bg:#F4F8FA;--ink:#14202B;--muted:#46586A;--line:#DCE5EC}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}
+img{max-width:100%}
+a{color:var(--teal)}
+:focus-visible{outline:3px solid #2E7DD1;outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+section{padding:56px 0}
+h1{font-size:clamp(31px,8vw,50px);line-height:1.1;margin:0 0 16px;letter-spacing:-.02em}
+h2{font-size:clamp(26px,5.6vw,38px);line-height:1.15;margin:0 0 12px;color:var(--navy);letter-spacing:-.01em}
+h3{font-size:25px;line-height:1.2;margin:4px 0 10px;color:var(--navy)}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--teal)}
+.lead{font-size:19px;color:var(--muted);max-width:640px;margin:0 0 8px}
+.center{text-align:center}.center .lead{margin-left:auto;margin-right:auto}
+
+/* botão */
+.cta{display:inline-flex;align-items:center;justify-content:center;min-height:58px;padding:0 30px;border-radius:14px;background:var(--mint);color:#06201C;font-weight:800;font-size:18px;text-decoration:none;text-align:center;box-shadow:0 10px 26px rgba(92,209,193,.35);transition:transform .15s,box-shadow .15s}
+.cta:hover{transform:translateY(-2px)}
+.cta.dark{background:var(--teal);color:#fff;box-shadow:0 10px 26px rgba(11,110,99,.28)}
+.cta[aria-disabled="true"]{background:#CBD5DD;color:#33414E;box-shadow:none;cursor:not-allowed;transform:none}
+.note{font-size:14px;color:var(--muted);margin:10px 0 0}
+
+/* hero */
+.hero{background:linear-gradient(165deg,#16294A 0%,#1F3A5F 58%,#0F5D63 130%);color:#fff;padding:34px 0 60px;overflow:hidden}
+.hero .eyebrow{color:var(--mint)}
+.hero .brand{display:flex;align-items:center;gap:10px;font-weight:800;margin-bottom:34px}
+.hero .brand i{width:34px;height:34px;border-radius:10px;background:#1F3A5F;border:1px solid rgba(255,255,255,.25);display:inline-grid;place-items:center}
+.hero .sub{font-size:19px;color:#DCE8F3;max-width:560px;margin:0 0 24px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0;padding:0;list-style:none}
+.chips li{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);padding:6px 13px;border-radius:999px;font-size:14px;font-weight:600}
+.hero-grid{display:grid;gap:36px;align-items:center}
+.hero-phones{display:flex;justify-content:center;align-items:flex-start;gap:18px}
+.hero-phones .phone:nth-child(2){display:none}
+
+/* celular */
+.phone{position:relative;width:min(272px,74vw);padding:9px;border-radius:38px;background:#0E1823;box-shadow:0 30px 60px -22px rgba(8,20,35,.6)}
+.phone::before{content:"";position:absolute;top:15px;left:50%;transform:translateX(-50%);width:64px;height:6px;border-radius:4px;background:#0E1823;z-index:1}
+.phone img{display:block;width:100%;height:auto;border-radius:30px;background:#fff}
+
+/* dores */
+.pain{display:grid;gap:14px;margin-top:26px}
+.pain div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px}
+.pain b{display:block;color:var(--navy);font-size:18px;margin-bottom:2px}
+.pain span{color:var(--muted)}
+.bridge{margin-top:28px;font-size:20px;font-weight:700;color:var(--navy)}
+
+/* funções */
+.feat{display:grid;gap:30px;align-items:center;padding:34px 0}
+.feat .shot{display:flex;justify-content:center}
+.feat ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}
+.feat li{position:relative;padding-left:32px}
+.feat li::before{content:"";position:absolute;left:0;top:5px;width:20px;height:20px;border-radius:50%;background:var(--teal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/13px no-repeat}
+.band{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+
+/* extras e públicos */
+.grid{display:grid;gap:12px;margin-top:22px;grid-template-columns:1fr 1fr}
+.grid div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;font-weight:600;color:var(--navy);font-size:15px}
+.tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;justify-content:center}
+.tags span{background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-weight:600;color:var(--navy)}
+
+/* passos */
+.steps{display:grid;gap:16px;margin-top:26px;counter-reset:s;padding:0;list-style:none}
+.steps li{counter-increment:s;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 18px 18px 70px;position:relative}
+.steps li::before{content:counter(s);position:absolute;left:18px;top:16px;width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800}
+.steps b{display:block;color:var(--navy);font-size:18px}
+
+/* oferta */
+.offer{background:linear-gradient(165deg,#16294A,#1F3A5F);color:#fff;border-radius:26px;padding:34px 22px;max-width:560px;margin:26px auto 0;text-align:center;box-shadow:0 30px 60px -30px rgba(15,35,60,.7)}
+.offer .price{font-size:58px;font-weight:800;line-height:1;margin:6px 0 2px;letter-spacing:-.02em}
+.offer .price small{font-size:20px;font-weight:700;margin-right:4px}
+.offer .once{color:#DCE8F3;margin:0 0 22px}
+.offer ul{list-style:none;margin:0 0 26px;padding:0;text-align:left;display:grid;gap:10px}
+.offer li{position:relative;padding-left:30px;color:#EAF1F8}
+.offer li::before{content:"";position:absolute;left:0;top:5px;width:20px;height:20px;border-radius:50%;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2306201C' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/13px no-repeat}
+.guar{margin-top:18px;font-size:15px;color:#DCE8F3}
+
+/* faq */
+details{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
+summary{list-style:none;cursor:pointer;display:flex;align-items:center;min-height:56px;padding:10px 18px;font-weight:700;color:var(--navy)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";margin-left:auto;padding-left:14px;font-size:24px;color:var(--teal)}
+details[open] summary::after{content:"–"}
+details p{margin:0;padding:0 18px 18px;color:var(--muted)}
+
+footer{padding:36px 0 120px;color:var(--muted);font-size:14px}
+footer p{margin:0 0 10px}
+
+/* barra fixa */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:12px;justify-content:center;box-shadow:0 -8px 24px rgba(20,32,43,.08)}
+.bar[hidden]{display:none}
+.bar .t{font-size:14px;line-height:1.25;color:var(--muted)}
+.bar .t b{display:block;color:var(--navy);font-size:17px}
+.bar .cta{min-height:50px;padding:0 20px;font-size:16px}
+
+@media (min-width:860px){
+  section{padding:76px 0}
+  .hero{padding:40px 0 84px}
+  .hero-grid{grid-template-columns:1.1fr .9fr}
+  .hero-phones .phone:nth-child(2){display:block;margin-top:46px}
+  .pain{grid-template-columns:1fr 1fr}
+  .feat{grid-template-columns:1fr 1fr;gap:64px;padding:44px 0}
+  .feat.rev .shot{order:2}
+  .grid{grid-template-columns:repeat(4,1fr)}
+  .steps{grid-template-columns:repeat(3,1fr)}
+  .steps li{padding:70px 18px 18px}
+  .steps li::before{top:18px}
+}
+</style>
+</head>
+<body>
+
+<header class="hero" id="topo">
+  <div class="wrap">
+    <div class="brand"><i aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5CD1C1" stroke-width="2.6" stroke-linecap="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></i> Sistema MEI</div>
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Para MEI prestador de serviços</div>
+        <h1>Seu MEI organizado no celular, sem planilha e sem mensalidade.</h1>
+        <p class="sub">Veja quanto você lucrou, quanto pode retirar e quem está te devendo, em poucos toques.</p>
+        <a class="cta" href="#oferta">Quero o Sistema MEI</a>
+        <p class="note" style="color:#BFD0E2">Pagamento único de <span data-price>R$ 47,00</span> · Garantia de 7 dias</p>
+        <ul class="chips">
+          <li>Android e iPhone</li>
+          <li>Abre sem internet</li>
+          <li>Seus dados só no seu aparelho</li>
+        </ul>
+      </div>
+      <div class="hero-phones">
+        <div class="phone"><img src="assets/tela-painel.webp" width="600" height="1298" alt="Painel do Sistema MEI mostrando venda rápida, faturado, despesas e lucro do mês"></div>
+        <div class="phone"><img src="assets/tela-retirada.webp" width="600" height="1298" alt="Tela Quanto posso retirar, com a divisão sugerida do lucro, e a barra do limite do MEI"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Você se reconhece?</div>
+    <h2>Trabalhar bem e ainda assim não saber se sobrou dinheiro.</h2>
+    <div class="pain">
+      <div><b>O dinheiro do negócio se mistura com o pessoal</b><span>No fim do mês você não sabe quanto foi lucro e quanto foi gasto.</span></div>
+      <div><b>Cliente promete pagar e você perde a conta</b><span>Quem está devendo? Desde quando? Ninguém lembra.</span></div>
+      <div><b>Você não sabe quanto pode retirar</b><span>Tirar demais deixa faltar para o DAS, o 13º que o MEI não tem e os imprevistos.</span></div>
+      <div><b>Medo de passar do limite ou esquecer o DAS</b><span>Sem acompanhar o ano inteiro, o susto vem quando já é tarde.</span></div>
+    </div>
+    <p class="bridge">O Sistema MEI resolve isso em um só lugar, no seu celular.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="center">
+      <div class="eyebrow">Veja por dentro</div>
+      <h2>Telas reais do aplicativo</h2>
+      <p class="lead">Nada de promessa vazia: é assim que o Sistema MEI funciona na sua mão.</p>
+    </div>
+
+    <div class="feat">
+      <div class="shot"><div class="phone"><img src="assets/tela-painel.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Painel com faturado, despesas e lucro do mês e comparação com o mês anterior"></div></div>
+      <div>
+        <div class="eyebrow">Painel</div>
+        <h3>Seu mês inteiro em 5 segundos</h3>
+        <p class="lead" style="font-size:17px">Abra o app e já veja como o negócio está.</p>
+        <ul>
+          <li>Faturado, despesas e lucro do mês, com margem</li>
+          <li>Comparação com o mês anterior (▲ subiu, ▼ caiu)</li>
+          <li>Meta do mês e ponto de equilíbrio</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feat rev">
+      <div class="shot"><div class="phone"><img src="assets/tela-retirada.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Card Quanto posso retirar e barra do limite do MEI"></div></div>
+      <div>
+        <div class="eyebrow">Quanto posso retirar?</div>
+        <h3>Retire com segurança, sem se enrolar</h3>
+        <p class="lead" style="font-size:17px">O app divide o lucro do mês para você.</p>
+        <ul>
+          <li>Retirada segura, reserva de 13º e férias, imprevistos e reinvestimento</li>
+          <li>Você ajusta os percentuais ao seu jeito</li>
+          <li>Barra do limite do MEI com projeção do ano</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feat">
+      <div class="shot"><div class="phone"><img src="assets/tela-venda-rapida.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Formulário de novo lançamento já preenchido pela venda rápida"></div></div>
+      <div>
+        <div class="eyebrow">Venda rápida</div>
+        <h3>Registre uma venda em segundos</h3>
+        <p class="lead" style="font-size:17px">Um toque no serviço e o lançamento abre pronto.</p>
+        <ul>
+          <li>Valor preenchido pelo preço do serviço</li>
+          <li>Venda parcelada e contas fixas que se repetem todo mês</li>
+          <li>Cadastro de cliente novo na hora</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feat rev">
+      <div class="shot"><div class="phone"><img src="assets/tela-lancamentos.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Lista de lançamentos com valores atrasados e botão Recebi"></div></div>
+      <div>
+        <div class="eyebrow">Contas a receber e a pagar</div>
+        <h3>Saiba quem está devendo</h3>
+        <p class="lead" style="font-size:17px">Nunca mais perca a conta de um pagamento.</p>
+        <ul>
+          <li>Toque em “Recebi” ou “Paguei” para dar baixa</li>
+          <li>Alerta de atrasados e do que vence em 7 dias</li>
+          <li>Mensagem de cobrança pronta para copiar e enviar</li>
+          <li>Lista de clientes parados há mais de 60 dias</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feat">
+      <div class="shot"><div class="phone"><img src="assets/tela-orcamento.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Orçamento com total e desconto calculados automaticamente"></div></div>
+      <div>
+        <div class="eyebrow">Orçamentos e recibos</div>
+        <h3>Documentos com cara profissional</h3>
+        <p class="lead" style="font-size:17px">Escolha cliente e serviços; o resto é automático.</p>
+        <ul>
+          <li>Total e desconto calculados na hora</li>
+          <li>Recibo com o valor por extenso escrito sozinho</li>
+          <li>Imprima, salve em PDF ou copie o texto</li>
+          <li>Histórico com taxa de aprovação dos orçamentos</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feat rev">
+      <div class="shot"><div class="phone"><img src="assets/tela-precificacao.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Precificação mostrando preço sugerido e alerta de preço abaixo do ideal"></div></div>
+      <div>
+        <div class="eyebrow">Precificação</div>
+        <h3>Descubra quanto cobrar de verdade</h3>
+        <p class="lead" style="font-size:17px">Pare de chutar o preço dos seus serviços.</p>
+        <ul>
+          <li>Calcula o valor da sua hora de trabalho</li>
+          <li>Sugere o preço de cada serviço</li>
+          <li>Avisa quando você cobra abaixo do ideal e atualiza com um toque</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feat">
+      <div class="shot"><div class="phone"><img src="assets/tela-obrigacoes.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Calendário do DAS com meses pagos e pendentes"></div></div>
+      <div>
+        <div class="eyebrow">Obrigações do MEI</div>
+        <h3>DAS e prazos sob controle</h3>
+        <p class="lead" style="font-size:17px">Veja o que vence e marque o que já fez.</p>
+        <ul>
+          <li>Calendário do DAS mês a mês; ao marcar como pago, ele vira despesa</li>
+          <li>Relatório mensal de receitas já somado</li>
+          <li>Lembrete da declaração anual e checklist</li>
+        </ul>
+        <p class="note">Confirme sempre valores e prazos oficiais no Portal do Empreendedor.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap center">
+    <div class="eyebrow">E ainda</div>
+    <h2>Pensado para o dia a dia</h2>
+    <div class="grid">
+      <div>Funciona sem internet</div>
+      <div>Backup em arquivo</div>
+      <div>Bloqueio por PIN</div>
+      <div>Modo claro e escuro</div>
+      <div>Exportar para planilha</div>
+      <div>Serviços de exemplo por profissão</div>
+      <div>Desfazer exclusão</div>
+      <div>Instalação na tela inicial</div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap center">
+    <div class="eyebrow">Para quem é</div>
+    <h2>Feito para MEI que vive de prestar serviços</h2>
+    <div class="tags">
+      <span>Manicure</span><span>Fotógrafo(a)</span><span>Eletricista</span><span>Designer</span><span>Personal trainer</span><span>Cabeleireiro(a) e barbeiro</span><span>Diarista</span><span>Técnico de informática</span><span>Professor(a) particular</span><span>E qualquer outro serviço</span>
+    </div>
+    <p class="note" style="margin-top:18px">Você escolhe sua área na primeira abertura e já recebe serviços de exemplo para ajustar.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="center"><div class="eyebrow">Como funciona</div><h2>Em 3 passos você começa</h2></div>
+    <ol class="steps">
+      <li><b>Compre pela Kiwify</b>Pagamento seguro, em poucos cliques.</li>
+      <li><b>Receba seu código pessoal</b>Enviado por e-mail <span data-delivery>em até 24 horas</span>, com o link do app.</li>
+      <li><b>Abra, cole o código e instale</b>Coloque o app na tela inicial e comece a usar.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="band" id="oferta">
+  <div class="wrap center">
+    <div class="eyebrow">Oferta</div>
+    <h2>Tudo isso por um pagamento único</h2>
+    <div class="offer">
+      <div style="font-weight:700;color:var(--mint)">Sistema MEI — Versão Serviços</div>
+      <div class="price"><small>R$</small><span data-price-num>47</span></div>
+      <p class="once">pagamento único · sem mensalidade</p>
+      <ul>
+        <li>Painel, vendas, despesas, clientes e serviços</li>
+        <li>Quanto posso retirar, limite do MEI e ponto de equilíbrio</li>
+        <li>Orçamentos, recibos e precificação</li>
+        <li>DAS e obrigações do MEI</li>
+        <li>Backup, PIN e exportação para planilha</li>
+        <li>Acesso pessoal por código</li>
+      </ul>
+      <a class="cta" href="#" data-cta>Quero o Sistema MEI</a>
+      <p class="guar"><b>Garantia de 7 dias.</b> Se não for para você, é só pedir o reembolso dentro do prazo.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="center"><div class="eyebrow">Dúvidas</div><h2>Perguntas frequentes</h2></div>
+    <div style="max-width:760px;margin:24px auto 0">
+      <details><summary>Preciso baixar algo na loja de aplicativos?</summary><p>Não. O Sistema MEI abre no navegador do celular e pode ser instalado na tela inicial, com ícone próprio, sem passar por loja de aplicativos.</p></details>
+      <details><summary>Funciona no iPhone?</summary><p>Sim. Abra no Safari e use “Adicionar à Tela de Início”. Instalar assim também deixa seus dados mais protegidos.</p></details>
+      <details><summary>Preciso de internet para usar?</summary><p>Só para abrir pela primeira vez. Depois de instalado, funciona normalmente sem internet.</p></details>
+      <details><summary>Onde ficam os meus dados?</summary><p>Somente no seu aparelho. Nem o vendedor tem acesso. Por isso o app tem backup em arquivo e avisa quando é hora de fazer um.</p></details>
+      <details><summary>Posso usar no celular e no computador ao mesmo tempo?</summary><p>Os dados não sincronizam sozinhos entre aparelhos. Para trocar de aparelho, você faz o backup em um e restaura no outro.</p></details>
+      <details><summary>Ele emite nota fiscal ou substitui meu contador?</summary><p>Não. É uma ferramenta de organização financeira. Ela ajuda a controlar seus números e lembrar das obrigações, mas valores e prazos oficiais devem ser confirmados nas fontes oficiais ou com um contador.</p></details>
+      <details><summary>O que é o código de acesso?</summary><p>É um código pessoal, com o seu nome, enviado após a compra. Ele libera o app para você e não deve ser compartilhado.</p></details>
+      <details><summary>Como funciona a garantia?</summary><p>Você tem 7 dias para pedir o reembolso diretamente pela plataforma de pagamento, sem burocracia.</p></details>
+      <details><summary>Serve para quem vende produtos?</summary><p>Esta versão é pensada para prestadores de serviços. Uma versão com controle de estoque para quem vende produtos está nos planos.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap center">
+    <h2>Comece hoje a ter clareza sobre o seu dinheiro</h2>
+    <p class="lead">Menos achismo, mais controle, direto do celular.</p>
+    <a class="cta dark" href="#" data-cta>Quero o Sistema MEI</a>
+    <p class="note">Pagamento único de <span data-price>R$ 47,00</span> · Garantia de 7 dias</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Sistema MEI é uma ferramenta de organização financeira e <b>não substitui um contador</b>. Limites, valores e prazos do MEI podem mudar: confirme sempre nas fontes oficiais.</p>
+    <p>Produto independente, sem vínculo com a Receita Federal, o Governo Federal ou o Portal do Empreendedor.</p>
+    <p>Pagamento processado pela Kiwify.<span data-support-wrap hidden> Suporte: <a data-support href="#"></a></span></p>
+    <p>© <span id="ano"></span> Sistema MEI. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<div class="bar" id="bar" hidden>
+  <div class="t"><b data-price>R$ 47,00</b>pagamento único</div>
+  <a class="cta dark" href="#" data-cta>Quero o Sistema MEI</a>
+</div>
+
+<script>
+/* ============ CONFIGURE AQUI ============ */
+var CONFIG = {
+  checkout: "",              // cole aqui o link de checkout da Kiwify (entre as aspas)
+  price: "R$ 47,00",         // preço exibido (deve ser igual ao da Kiwify)
+  delivery: "em até 24 horas", // prazo que você promete para enviar o código
+  support: ""                // e-mail de suporte (opcional)
+};
+/* ======================================== */
+(function(){
+  var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+  $$('[data-price]').forEach(function(e){e.textContent=CONFIG.price});
+  var num=CONFIG.price.replace(/[^\d,]/g,'').split(',')[0];$$('[data-price-num]').forEach(function(e){e.textContent=num});
+  $$('[data-delivery]').forEach(function(e){e.textContent=CONFIG.delivery});
+  $$('#ano').forEach(function(e){e.textContent=new Date().getFullYear()});
+  if(CONFIG.support){var s=document.querySelector('[data-support]');s.href='mailto:'+CONFIG.support;s.textContent=CONFIG.support;document.querySelector('[data-support-wrap]').hidden=false}
+  $$('[data-cta]').forEach(function(a){
+    if(CONFIG.checkout){a.href=CONFIG.checkout;a.rel='noopener'}
+    else{a.setAttribute('aria-disabled','true');a.textContent='Link de compra em breve';a.addEventListener('click',function(e){e.preventDefault()})}
+  });
+  var bar=document.getElementById('bar'),hero=document.getElementById('topo'),oferta=document.getElementById('oferta');
+  if('IntersectionObserver' in window){
+    var state={hero:true,oferta:false};
+    var upd=function(){bar.hidden=state.hero||state.oferta};
+    new IntersectionObserver(function(es){state.hero=es[0].isIntersecting;upd()},{threshold:0.05}).observe(hero);
+    new IntersectionObserver(function(es){state.oferta=es[0].isIntersecting;upd()},{threshold:0.2}).observe(oferta);
+  }
+})();
+</script>
+</body>
+</html>
